@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:webviewx/webviewx.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class SETTINGS {
   static const title = 'Flutter PWA Wrapper';
-  static const url = 'https://news.ycombinator.com/';
+  static const url = 'https://flutter.dev';
+  // set userAgent to prevent 403 Google 'Error: Disallowed_Useragent'
+  // @see https://stackoverflow.com/a/69342626/595152
+  static const userAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36";
 }
 
 void main() {
@@ -16,12 +19,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: SETTINGS.title,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
@@ -34,60 +34,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late WebViewXController webviewController;
+  late WebViewController webviewController;
 
   Size get screenSize => MediaQuery.of(context).size;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WebViewX(
-        key: const ValueKey('webviewx'),
-        initialContent: SETTINGS.url,
-        // initialSourceType: SourceType.urlBypass,
-        height: screenSize.height,
-        width: screenSize.width,
-        onWebViewCreated: (controller) async {
-          webviewController = controller;
-          // webviewController.callJsMethod('testPlatformIndependentMethod', []);
-          // final result = await webviewController.evalRawJavascript(
-          //   'localStorage.setItem("isWKWebView", true)',
-          //   inGlobalContext: true,
-          // );
-          // debugPrint(result);
-        },
-        jsContent: const {
-          EmbeddedJsContent(
-            js: "alert('blubb'); localStorage.setItem('isWKWebView', true);",
-            // webJs:
-            //     "function testPlatformSpecificMethod(msg) { TestDartCallback('Web callback says: ' + msg) }",
-            // mobileJs:
-            //     "function testPlatformSpecificMethod(msg) { TestDartCallback.postMessage('Mobile callback says: ' + msg) }",
-          ),
-        },
-        // dartCallBacks: {
-        //   DartCallback(
-        //     name: 'TestDartCallback',
-        //     callBack: (msg) => showSnackBar(msg.toString(), context),
-        //   )
-        // },
-        webSpecificParams: const WebSpecificParams(
-          printDebugInfo: true,
-        ),
-        mobileSpecificParams: const MobileSpecificParams(
-          androidEnableHybridComposition: true,
-        ),
+      body: WebView(
+        initialUrl: SETTINGS.url,
+        javascriptMode: JavascriptMode.unrestricted,
+        initialCookies: [WebViewCookie(name: 'isNative', value: "true", domain: SETTINGS.url.replaceAll('https://', ''))],
+        onWebViewCreated: (controller) => webviewController = controller,
+        // onPageFinished: (url) => webviewController.runJavascript('localStorage.setItem("isNative", true)'),
         navigationDelegate: (navigation) {
-          debugPrint(navigation.content.sourceType.toString());
+          debugPrint(navigation.url);
           return NavigationDecision.navigate;
         },
+        userAgent: SETTINGS.userAgent,
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-
-  @override
-  void dispose() {
-    webviewController.dispose();
-    super.dispose();
   }
 }
