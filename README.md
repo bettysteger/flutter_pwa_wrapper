@@ -9,34 +9,50 @@ Go to `main.dart` and edit SETTINGS:
 ```
 class SETTINGS {
   static const title = 'Flutter PWA Wrapper';
-  static const url = 'https://flutter.dev/'; 
+  static const url = 'https://bettysteger.com/flutter_pwa_wrapper/demo/'; 
 }
 ```
 
-### Create Firebase App 
+### Set-up Push Notifications 
 
-Register an iOS App, add your Apple bundle ID and download `GoogleService-Info.plist`. Open `ios/Runner.xcodeproj`. Move the `GoogleService-Info.plist` inside the `Runner` folder. You can ignore the next instructions in the Firebase setup wizard. Instead follow these [instructions](https://firebase.flutter.dev/docs/messaging/apple-integration)!
+1. Create Firebase App 
+
+Register an iOS App, add your Apple bundle ID and download `GoogleService-Info.plist`. Open `ios/Runner.xcodeproj`. Move the `GoogleService-Info.plist` inside the `Runner` folder. You can ignore the next instructions in the Firebase setup wizard. Follow these [instructions](https://firebase.flutter.dev/docs/messaging/apple-integration) instead!
+
+![Enable Apple Push Notification](https://images.prismic.io/invertase/74bd1df4-c9e9-465c-9e0f-cacf6e26d68c_7539b8ec-c310-40dd-91e5-69f19009786f_apple-fcm-upload-key.gif?auto=compress,format)
+
+
+2. Debugging
+
+Either do a `flutter run` in the console (will open iOS simulator if no device is connected) or **Run > Start Debugging** in VSCode (install [Flutter extension](https://docs.flutter.dev/get-started/editor?tab=vscode)).
 
 Run the flutter app on your iOS device and click "Enable Notification" from the demo page. Copy the device token to the **Firebase Cloud Messaging > Compose notification > Send test message**:
 
 ![Send test message](docs/test-push.png)
 
+### How to use in JavaScript
+
+See [demo](https://github.com/bettysteger/flutter_pwa_wrapper/blob/main/docs/demo/index.html):
+
+```
+/**
+ * This function is called by Flutter after getPushToken below is executed
+ */
+function setPushToken(token) { 
+  // save token to current logged-in user in your DB 
+} 
+
+if(window.flutterChannel && window.flutterChannel.postMessage) {
+  window.flutterChannel.postMessage('getPushToken');
+}
+```
+
+
 ## Development
 
 ### Run 
 
-Either do a `flutter run` in the console (will open iOS simulator if no device is connected) or Run > Start Debugging in VSCode.
-
-### Flutter documenation
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Either do a `flutter run` in the console (will open iOS simulator if no device is connected) or **Run > Start Debugging** in VSCode (install [Flutter extension](https://docs.flutter.dev/get-started/editor?tab=vscode)).
 
 ### Add a plugin
 

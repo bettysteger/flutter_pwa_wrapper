@@ -22,20 +22,16 @@
   </head>
   <body>
     <div class="container">
-      <p><button id="enableNotifications">🔔 Enable Notification</button></p>
-      <code><pre id="token">&nbsp;</pre></code>
+      <button id="enableNotifications">🔔 Enable Notification</button>
     </div>
     <script>
       const notificationButton = document.getElementById("enableNotifications");
-      const tokenCodeEl = document.getElementById("token");
 
       function setPushToken(token) {
         console.log(token);
         notificationButton.textContent = "🔔 Push enabled";
-        tokenCodeEl.textContent = token;
-        setTimeout(() => {
-          tokenCodeEl.textContent = "";
-        }, 5000);
+        // share to get token to PC, where you can test with Firebase
+        navigator.share({title: 'Your device token', text: token});
       }
 
       if(window.flutterChannel && window.flutterChannel.postMessage) {
