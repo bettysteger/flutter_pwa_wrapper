@@ -1,13 +1,13 @@
 <html>
   <head>
     <title>Web Push Notification Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no, shrink-to-fit=no">
     <style>
-      .container {
-        height: 100vh;
-        width: 100%;
+      body {
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
       }
       #enableNotifications {
         height: 80px;
@@ -22,14 +22,20 @@
   </head>
   <body>
     <div class="container">
-      <button id="enableNotifications">🔔 Enable Notification</button>
+      <p><button id="enableNotifications">🔔 Enable Notification</button></p>
+      <code><pre id="token">&nbsp;</pre></code>
     </div>
     <script>
       const notificationButton = document.getElementById("enableNotifications");
+      const tokenCodeEl = document.getElementById("token");
 
       function setPushToken(token) {
         console.log(token);
         notificationButton.textContent = "🔔 Push enabled";
+        tokenCodeEl.textContent = token;
+        setTimeout(() => {
+          tokenCodeEl.textContent = "";
+        }, 5000);
       }
 
       if(window.flutterChannel && window.flutterChannel.postMessage) {

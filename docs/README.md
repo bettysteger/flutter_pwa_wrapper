@@ -13,6 +13,14 @@ class SETTINGS {
 }
 ```
 
+### Create Firebase App 
+
+Register an iOS App, add your Apple bundle ID and download `GoogleService-Info.plist`. Open `ios/Runner.xcodeproj`. Move the `GoogleService-Info.plist` inside the `Runner` folder. You can ignore the next instructions in the Firebase setup wizard.
+
+Run the flutter app on your iOS device and click "Enable Notification" from the demo page. Copy the device token to the **Firebase Cloud Messaging > Compose notification > Send test message**:
+
+![Send test message](test-push.png)
+
 ## Development
 
 ### Run 
