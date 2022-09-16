@@ -13,6 +13,10 @@ class SETTINGS {
 }
 ```
 
+### Create Firebase App 
+
+Register an iOS App, add your Apple bundle ID and download `GoogleService-Info.plist`. Open `ios/Runner.xcodeproj`. Move the `GoogleService-Info.plist` inside the `Runner` folder. You can ignore the next instructions in the Firebase setup wizard.
+
 ## Development
 
 ### Run 
