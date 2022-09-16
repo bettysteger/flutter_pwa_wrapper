@@ -4,7 +4,8 @@ Wrapping your website in a native app with native push notifications and communi
 
 ## Setup 
 
-Go to `main.dart` and edit SETTINGS:
+1. Install [Flutter](https://docs.flutter.dev/get-started/install).
+2. Go to `main.dart` and edit SETTINGS:
 
 ```
 class SETTINGS {
@@ -15,7 +16,7 @@ class SETTINGS {
 
 ### Set-up Push Notifications 
 
-1. Create Firebase App 
+1. Create [Firebase](https://console.firebase.google.com/) App 
 
 Register an iOS App, add your Apple bundle ID and download `GoogleService-Info.plist`. Open `ios/Runner.xcodeproj`. Move the `GoogleService-Info.plist` inside the `Runner` folder. You can ignore the next instructions in the Firebase setup wizard. Follow these [instructions](https://firebase.flutter.dev/docs/messaging/apple-integration) instead!
 
