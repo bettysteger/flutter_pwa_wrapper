@@ -74,7 +74,7 @@ class PushNotificationsManager {
   Future<void> _handleMessage(RemoteMessage message) async {
     debugPrint('handlePushNotification: ${message.data.toString()}');
 
-    if (message.data['url']) {
+    if (message.data['url'] != null) {
       return _webviewController.loadUrl(message.data['url']);
     }
   }
