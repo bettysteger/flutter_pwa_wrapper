@@ -51,9 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     /**
      * How to use in JS:
      * function setPushToken(token) { ... } // returns the device token
-     * if(window.flutterChannel && window.flutterChannel.postMessage) {
-     *  window.flutterChannel.postMessage('getPushToken');
-     * }
+     * Notification.requestPermission()
      */
     JavascriptChannel channel = JavascriptChannel(
       name: 'flutterChannel',
@@ -79,7 +77,16 @@ class _MyHomePageState extends State<MyHomePage> {
         webviewController = controller;
         PushNotificationsManager.getInstance().init(webviewController, SETTINGS.shouldAskForPushPermission);
       },
-      onPageFinished: (url) => webviewController.runJavascript('localStorage.setItem("isNative", true)'),
+      onPageFinished: (url) {
+        webviewController.runJavascript("""
+          window.Notification = {
+            requestPermission: (callback) => {
+              window.flutterChannel.postMessage('getPushToken');
+              return callback ? callback('granted') : true;
+            }
+          };
+        """);
+      },
       navigationDelegate: (navigation) {
         debugPrint('navigationDelegate ${navigation.url}');
         return NavigationDecision.navigate;

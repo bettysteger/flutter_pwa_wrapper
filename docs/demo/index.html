@@ -25,22 +25,78 @@
       <button id="enableNotifications">🔔 Enable Notification</button>
     </div>
     <script>
-      const notificationButton = document.getElementById("enableNotifications");
+
+      /**
+       * Functions from
+       * @see https://web.dev/push-notifications-subscribing-a-user/
+       */
+      const PushService = {
+        pushSupported: 'serviceWorker' in navigator && 'PushManager' in window,
+        requestPermission: () => {
+          return new Promise(function (resolve, reject) {
+            const permissionResult = Notification.requestPermission(resolve);
+
+            if (permissionResult) {
+              permissionResult.then((result) => {
+                setPushToken();
+                resolve(result);
+              }, reject);
+            }
+          }).then(function (permissionResult) {
+            if (permissionResult !== 'granted') {
+              throw new Error("We weren't granted permission.");
+            }
+          });
+        }
+      }
+
+      // urlB64ToUint8Array is a magic function that will encode the base64 public key
+      // to Array buffer which is needed by the subscription option
+      const urlB64ToUint8Array = base64String => {
+        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding)
+          .replace(/\-/g, "+")
+          .replace(/_/g, "/");
+        const rawData = atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+          outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+      };
 
       function setPushToken(token) {
         console.log(token);
         notificationButton.textContent = "🔔 Push enabled";
-        // share to get token to PC, where you can test with Firebase
-        navigator.share({title: 'Your device token', text: token});
+
+        if(token) { // ios device token
+          // send subscription to server and save to current user
+          // apiClient.put('/auth', {device_token: token})
+          // share to get token to PC, where you can test with Firebase
+          if('share' in navigator) {
+            navigator.share({title: 'Your device token', text: token});
+          }
+          return;
+        }
+        return navigator.serviceWorker.register('/service-worker.js')
+          .then(function (registration) {
+            const subscribeOptions = {
+              userVisibleOnly: true,
+              applicationServerKey: urlB64ToUint8Array(PUSH_SERVER_KEY), // for WebPush
+            };
+
+            return registration.pushManager.subscribe(subscribeOptions);
+          })
+          .then(function (pushSubscription) {
+            // send subscription to server and save to current user
+            // apiClient.put('/auth', {webpush_subscription: pushSubscription})
+            return pushSubscription;
+          });
       }
 
-      if(window.flutterChannel && window.flutterChannel.postMessage) {
-        notificationButton.addEventListener("click", () => {
-          window.flutterChannel.postMessage('getPushToken');
-        });
-      } else {
-        notificationButton.textContent = "Push Not Supported";
-      }
+      const notificationButton = document.getElementById("enableNotifications");
+
+      notificationButton.addEventListener("click", () => PushService.requestPermission());
     </script>
   </body>
 </html>

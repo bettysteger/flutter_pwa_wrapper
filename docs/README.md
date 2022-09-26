@@ -37,15 +37,13 @@ See [demo](https://github.com/bettysteger/flutter_pwa_wrapper/blob/main/docs/dem
 
 ```
 /**
- * This function is called by Flutter after getPushToken below is executed
+ * This function is called by Flutter after `Notification.requestPermission` below is executed
  */
 function setPushToken(token) { 
   // save token to current logged-in user in your DB 
 } 
 
-if(window.flutterChannel && window.flutterChannel.postMessage) {
-  window.flutterChannel.postMessage('getPushToken');
-}
+Notification.requestPermission()
 ```
 
 
