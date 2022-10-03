@@ -109,7 +109,7 @@ class PushNotificationsManager {
   }
 
   Future<String?> getToken() {
-    return _firebaseMessaging.getToken();
+    return _firebaseMessaging.getAPNSToken();
   }
 
 }
