@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:push/push.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 
 class PushNotificationsManager {
   static late PushNotificationsManager _instance;
-  late FirebaseMessaging _firebaseMessaging;
+  late Push _push;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
   late WebViewController _webviewController;
@@ -19,7 +19,7 @@ class PushNotificationsManager {
 
   static PushNotificationsManager getInstance() {
     _instance = PushNotificationsManager._internal();
-    _instance._firebaseMessaging = FirebaseMessaging.instance;
+    _instance._push = Push.instance;
     return _instance;
   }
 
@@ -27,9 +27,9 @@ class PushNotificationsManager {
     _webviewController = webviewController;
     if(_initialized) { return false; }
 
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-    // _firebaseMessaging.getInitialMessage().then(_handleMessage);
+    Push.instance.onNotificationTap.listen(_handleMessage);
+    Push.instance.onMessage.listen(_handleForegroundMessage);
+    // _push.getInitialMessage().then(_handleMessage);
 
     var bool = false;
 
@@ -54,7 +54,7 @@ class PushNotificationsManager {
   }
 
   Future<bool> requestPermission() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+    bool granted = await _push.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -63,37 +63,28 @@ class PushNotificationsManager {
       provisional: false,
       sound: true,
     );
-    await _firebaseMessaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    return settings.authorizationStatus == AuthorizationStatus.authorized;
+    return granted;
   }
 
-  Future<void> _handleMessage(RemoteMessage message) async {
-    debugPrint('handlePushNotification: ${message.data.toString()}');
+  Future<void> _handleMessage(message) async {
+    debugPrint('handlePushNotification: ${message.toString()}');
+    String? url = message['payload'] != null ? jsonDecode(message['payload'])['url'] : message['url'];
 
-    if (message.data['url'] != null) {
-      return _webviewController.loadUrl(message.data['url']);
+    if (url != null) {
+      return _webviewController.loadUrl(url);
     }
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
+    debugPrint('handleForegroundMessage: ${message.toString()}');
+    var notification = message.notification;
 
-    if (notification != null && android != null) {
+    if (notification != null) {
       flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
           notification.body,
-          const NotificationDetails(
-            android: AndroidNotificationDetails('pwa_wrapper', 'PWA wrapper',
-              importance: Importance.high,
-              sound: RawResourceAndroidNotificationSound('notification')
-            ),
-          ),
+          const NotificationDetails(),
           payload: jsonEncode(message.data)
       );
     }
@@ -109,7 +100,7 @@ class PushNotificationsManager {
   }
 
   Future<String?> getToken() {
-    return _firebaseMessaging.getAPNSToken();
+    return _push.token;
   }
 
 }
