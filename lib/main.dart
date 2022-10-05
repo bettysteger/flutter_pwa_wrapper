@@ -59,9 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
           if(SETTINGS.shouldAskForPushPermission) {
             await pnm.requestPermission();
           }
-          final pushToken = await pnm.getToken();
-          final script = "setPushToken(\"$pushToken\")";
-          webviewController.runJavascript(script);
+          final token = await pnm.getToken();
+          webviewController.runJavascript("setPushToken(\"$token\")");
         }
       },
     );
@@ -71,9 +70,13 @@ class _MyHomePageState extends State<MyHomePage> {
       javascriptMode: JavascriptMode.unrestricted,
       javascriptChannels: {channel},
       initialCookies: [WebViewCookie(name: 'isNative', value: 'true', domain: cookieDomain)],
-      onWebViewCreated: (controller) {
+      onWebViewCreated: (controller) async {
         webviewController = controller;
-        PushNotificationsManager.getInstance().init(webviewController, SETTINGS.shouldAskForPushPermission);
+        var pnm = PushNotificationsManager.getInstance();
+        await pnm.init(webviewController, SETTINGS.shouldAskForPushPermission);
+        pnm.onNewToken.listen((token) {
+          webviewController.runJavascript("setPushToken(\"$token\")");
+        });
       },
       onPageFinished: (url) {
         webviewController.runJavascript("""

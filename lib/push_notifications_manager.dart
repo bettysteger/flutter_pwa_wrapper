@@ -99,6 +99,10 @@ class PushNotificationsManager {
     return Future.value();
   }
 
+  // To be informed that the device's token has been updated by the operating system
+  // You should update your servers with this token
+  Stream<String> get onNewToken => _push.onNewToken;
+
   Future<String?> getToken() {
     return _push.token;
   }
