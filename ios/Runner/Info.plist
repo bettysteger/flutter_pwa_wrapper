@@ -28,6 +28,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Add image to profile</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
