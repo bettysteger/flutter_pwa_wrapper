@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_pwa_wrapper/push_notifications_manager.dart';
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     String? cookieDomain = SETTINGS.cookieDomain;
-    cookieDomain ??= SETTINGS.url.replaceFirst(RegExp('https?://'), '').split('/')[0];
+    cookieDomain ??= Uri.parse(SETTINGS.url).host;
 
     /**
      * How to use in JS:
@@ -88,10 +89,21 @@ class _MyHomePageState extends State<MyHomePage> {
         """);
       },
       navigationDelegate: (navigation) {
-        debugPrint('navigationDelegate ${navigation.url}');
-        return NavigationDecision.navigate;
+        // debugPrint('navigationDelegate ${navigation.url} ${navigation.isForMainFrame}');
+        Uri uri = Uri.parse(navigation.url);
+        if (!navigation.isForMainFrame || uri.host == Uri.parse(SETTINGS.url).host) {
+          return NavigationDecision.navigate;
+        }
+        _launchURL(uri);
+        return NavigationDecision.prevent;
       },
       userAgent: SETTINGS.userAgent,
     );
+  }
+
+  _launchURL(Uri uri) async {
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
 }
