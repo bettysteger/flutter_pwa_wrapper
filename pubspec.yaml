@@ -37,6 +37,7 @@ dependencies:
   webview_flutter: ^3.0.4
   flutter_local_notifications: ^9.7.0
   push: ^0.1.3
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_test:
