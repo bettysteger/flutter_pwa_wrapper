@@ -4,8 +4,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_pwa_wrapper/push_notifications_manager.dart';
 
 class SETTINGS {
-  static const title = 'Innform [Staging]';
-  static const url = 'https://stagingapp.innform.io/'; // test dev
+  static const title = 'Innform';
+  static const url = 'https://app.innform.io/'; // test dev
   static const allowedOrigins = ["innform.io", "intersport.de", "intersportakademie.at", "serverhero.de", "lowa.de", "sebazzo.com"];
   static const cookieDomain = null; // only necessary if you are using a subdomain and want it on the top-level domain
 
