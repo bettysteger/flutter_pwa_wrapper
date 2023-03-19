@@ -97,11 +97,17 @@
       }
 
       const notificationButton = document.getElementById("enableNotifications");
+      notificationButton.addEventListener("click", () => PushService.requestPermission());
 
-      if(PushService.pushSupported) {
-        notificationButton.addEventListener("click", () => PushService.requestPermission());
-      } else {
+      if(!PushService.pushSupported) {
         notificationButton.textContent = "🔕 Push not supported";
+        // need this timeout because flutter app will add window.Notification after page load
+        setTimeout(() => {
+          PushService.pushSupported = 'Notification' in window;
+          if (PushService.pushSupported) {
+            notificationButton.textContent = "🔔 Enable Notification";
+          }
+        }, 500);
       }
     </script>
   </body>
