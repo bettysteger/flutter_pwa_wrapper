@@ -38,9 +38,8 @@ class PushNotificationsManager {
       flutterLocalNotificationsPlugin.initialize(
         const InitializationSettings(
           android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-          iOS: IOSInitializationSettings()
         ),
-        onSelectNotification: onSelectNotification
+        onDidReceiveNotificationResponse: onSelectNotification
       );
     }
 
@@ -75,7 +74,7 @@ class PushNotificationsManager {
     debugPrint('handlePushNotification: ${message.data.toString()}');
 
     if (message.data['url'] != null) {
-      return _webviewController.loadUrl(message.data['url']);
+      return _webviewController.loadRequest(message.data['url']);
     }
   }
 
@@ -99,13 +98,13 @@ class PushNotificationsManager {
     }
   }
 
-  Future onSelectNotification(String? payload) {
+  void onSelectNotification(NotificationResponse? response) {
+    String? payload = response?.payload;
     debugPrint('onSelectNotification: $payload');
     var data = jsonDecode(payload!);
     if(data['url'] != null) {
-      return _webviewController.loadUrl(data['url']);
+      _webviewController.loadRequest(data['url']);
     }
-    return Future.value();
   }
 
   Future<String?> getToken() {
