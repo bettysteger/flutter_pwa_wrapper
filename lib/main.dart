@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     String? cookieDomain = SETTINGS.cookieDomain;
     cookieDomain ??= Uri.parse(SETTINGS.url).host;
+    bool tempAllowRedirect = false;
 
     /**
      * How to use in JS:
@@ -92,12 +93,22 @@ class _MyHomePageState extends State<MyHomePage> {
           Uri uri = Uri.parse(request.url);
           bool allow = !request.isMainFrame;
           if(!allow) {
+            // starts SSO login
+            if(uri.host == "sso.innform.io" || uri.host == "auth.innform.io" || uri.host.endsWith("auth0.com")) {
+              tempAllowRedirect = true;
+            }
+
+            bool onOrigins = false;
             for(String allowedOrigin in SETTINGS.allowedOrigins) {
               if(uri.host.endsWith(allowedOrigin)) {
-                allow = true;
+                onOrigins = true;
                 break;
               }
             }
+            if(tempAllowRedirect && onOrigins && uri.host != "sso.innform.io" && uri.host != "auth.innform.io") {
+              tempAllowRedirect = false;
+            }
+            allow = onOrigins || tempAllowRedirect;
           }
           if (allow) {
             return NavigationDecision.navigate;
