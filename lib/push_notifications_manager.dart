@@ -38,9 +38,8 @@ class PushNotificationsManager {
       flutterLocalNotificationsPlugin.initialize(
         const InitializationSettings(
           android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-          iOS: IOSInitializationSettings()
         ),
-        onSelectNotification: onSelectNotification
+        onDidReceiveNotificationResponse: onSelectNotification
       );
     }
 
@@ -70,8 +69,8 @@ class PushNotificationsManager {
     debugPrint('handlePushNotification: ${message.toString()}');
     String? url = message['payload'] != null ? jsonDecode(message['payload'])['url'] : message['url'];
 
-    if (url != null) {
-      return _webviewController.loadUrl(url);
+    if (message.data['url'] != null) {
+      return _webviewController.loadRequest(message.data['url']);
     }
   }
 
@@ -90,13 +89,13 @@ class PushNotificationsManager {
     }
   }
 
-  Future onSelectNotification(String? payload) {
+  void onSelectNotification(NotificationResponse? response) {
+    String? payload = response?.payload;
     debugPrint('onSelectNotification: $payload');
     var data = jsonDecode(payload!);
     if(data['url'] != null) {
-      return _webviewController.loadUrl(data['url']);
+      _webviewController.loadRequest(data['url']);
     }
-    return Future.value();
   }
 
   // To be informed that the device's token has been updated by the operating system

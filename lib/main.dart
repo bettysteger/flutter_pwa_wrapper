@@ -46,70 +46,70 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     String? cookieDomain = SETTINGS.cookieDomain;
-    cookieDomain ??= SETTINGS.url.replaceFirst(RegExp('https?://'), '').split('/')[0];
+    cookieDomain ??= Uri.parse(SETTINGS.url).host;
 
     /**
      * How to use in JS:
      * function setPushToken(token) { ... } // returns the device token
      * Notification.requestPermission()
      */
-    JavascriptChannel channel = JavascriptChannel(
-      name: 'flutterChannel',
-      onMessageReceived: (JavascriptMessage message) async {
-        if(message.message == 'getPushToken') {
-          var pnm = PushNotificationsManager.getInstance();
-          if(SETTINGS.shouldAskForPushPermission) {
-            await pnm.requestPermission();
-          }
-          final token = await pnm.getToken();
-          webviewController.runJavascript("setPushToken(\"$token\")");
-        }
-      },
-    );
-
-    return WebView(
-      initialUrl: SETTINGS.url,
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: {channel},
-      initialCookies: [WebViewCookie(name: 'isNative', value: 'true', domain: cookieDomain)],
-      onWebViewCreated: (controller) async {
-        webviewController = controller;
+    void javaScriptFunction (JavaScriptMessage message) async {
+      if(message.message == 'getPushToken') {
         var pnm = PushNotificationsManager.getInstance();
-        await pnm.init(webviewController, SETTINGS.shouldAskForPushPermission);
-        pnm.onNewToken.listen((token) {
-          webviewController.runJavascript("setPushToken(\"$token\")");
-        });
-      },
-      onPageFinished: (url) {
-        webviewController.runJavascript("""
-          window.Notification = {
-            requestPermission: (callback) => {
-              window.flutterChannel.postMessage('getPushToken');
-              return callback ? callback('granted') : true;
-            }
-          };
-        """);
-      },
-      navigationDelegate: (navigation) {
-        // debugPrint('navigationDelegate ${navigation.url} ${navigation.isForMainFrame}');
-        Uri uri = Uri.parse(navigation.url);
-        bool allow = !navigation.isForMainFrame;
-        if(!allow) {
-          for(String allowedOrigin in SETTINGS.allowedOrigins) {
-            if(uri.host.endsWith(allowedOrigin)) {
-              allow = true;
-              break;
+        if(SETTINGS.shouldAskForPushPermission) {
+          await pnm.requestPermission();
+        }
+        final pushToken = await pnm.getToken();
+        final script = "setPushToken(\"$pushToken\")";
+        webviewController.runJavaScript(script);
+      }
+    }
+
+    launchURL(Uri uri) async {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      }
+    }
+
+    webviewController = WebViewController()
+      ..loadRequest(Uri.parse(SETTINGS.url))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel('flutterChannel', onMessageReceived: javaScriptFunction)
+      ..setUserAgent(SETTINGS.userAgent)
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (String url)  {
+          webviewController.runJavaScript("""
+            window.Notification = {
+              requestPermission: (callback) => {
+                window.flutterChannel.postMessage('getPushToken');
+                return callback ? callback('granted') : true;
+              }
+            };
+          """);
+        },
+        onNavigationRequest: (NavigationRequest request) {
+          // debugPrint('onNavigationRequest ${request.url} ${request.isMainFrame}');
+          Uri uri = Uri.parse(request.url);
+          bool allow = !request.isMainFrame;
+          if(!allow) {
+            for(String allowedOrigin in SETTINGS.allowedOrigins) {
+              if(uri.host.endsWith(allowedOrigin)) {
+                allow = true;
+                break;
+              }
             }
           }
-        }
-        if (allow) {
-          return NavigationDecision.navigate;
-        }
-        _launchURL(uri);
-        return NavigationDecision.prevent;
-      },
-      userAgent: SETTINGS.userAgent,
-    );
+          if (allow) {
+            return NavigationDecision.navigate;
+          }
+          launchURL(uri);
+          return NavigationDecision.prevent;
+        }),
+      );
+
+    PushNotificationsManager.getInstance().init(webviewController, SETTINGS.shouldAskForPushPermission);
+
+    return WebViewWidget(controller: webviewController);
   }
 
   _launchURL(Uri uri) async {

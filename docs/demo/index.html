@@ -8,8 +8,9 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+        font-family: sans-serif;
       }
-      #enableNotifications {
+      button {
         height: 80px;
         width: 350px;
         background-color: black;
@@ -18,11 +19,22 @@
         border-radius: 500px;
         font-size: 24px;
       }
+      a {
+        text-decoration: none;
+      }
+      a:hover, a:focus {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <button id="enableNotifications">🔔 Enable Notification</button>
+      <p><button id="enableNotifications">🔔 Enable Notification</button></p><br>
+      <p>
+        <a href="https://github.com/bettysteger/flutter_pwa_wrapper/">Flutter app template that enables `window.Notification`</a><br><br>
+        <a href="https://github.com/bettysteger/flutter_pwa_wrapper/blob/main/docs/demo/index.html">HTML/JS of this Demo Page</a>
+      </p>
+      <a href="https://github.com/sponsors/bettysteger">💖 Sponsor me 💖</a>
     </div>
     <script>
 
@@ -97,11 +109,16 @@
       }
 
       const notificationButton = document.getElementById("enableNotifications");
+      notificationButton.addEventListener("click", () => PushService.requestPermission());
 
-      if(PushService.pushSupported) {
-        notificationButton.addEventListener("click", () => PushService.requestPermission());
-      } else {
-        notificationButton.textContent = "🔕 Push not supported";
+      if(!PushService.pushSupported) {
+        // need this timeout because flutter app will add window.Notification after page load
+        setTimeout(() => {
+          PushService.pushSupported = 'Notification' in window;
+          if (!PushService.pushSupported) {
+            notificationButton.textContent = "🔕 Push not supported";
+          }
+        }, 500);
       }
     </script>
   </body>
