@@ -12,7 +12,7 @@ class SETTINGS {
   static const shouldAskForPushPermission = true;
   // set userAgent to prevent 403 Google 'Error: Disallowed_Useragent'
   // @see https://stackoverflow.com/a/69342626/595152
-  static const userAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36";
+  static const userAgent = "Mozilla/5.0 (iPhone14,6; U; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/19E241 Safari/602.1";
 }
 
 Future<void> main() async {
