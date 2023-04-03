@@ -23,7 +23,7 @@ class PushNotificationsManager {
     return _instance;
   }
 
-  Future<bool> init(WebViewController webviewController, bool shouldAskForPushPermission) async {
+  Future<bool> init(WebViewController webviewController) async {
     _webviewController = webviewController;
     if(_initialized) { return false; }
 
@@ -42,9 +42,7 @@ class PushNotificationsManager {
         onDidReceiveNotificationResponse: onSelectNotification
       );
     }
-
-
-    if (Platform.isIOS && !shouldAskForPushPermission) {
+    if (Platform.isIOS) {
       bool = await requestPermission();
     }
 
@@ -111,4 +109,7 @@ class PushNotificationsManager {
     return _firebaseMessaging.getToken();
   }
 
+  Future<void> subscribeToMarketing() async {
+    return _firebaseMessaging.subscribeToTopic('marketing');
+  }
 }
