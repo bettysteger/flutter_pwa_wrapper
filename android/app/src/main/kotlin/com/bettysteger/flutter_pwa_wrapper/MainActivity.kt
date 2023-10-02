@@ -1,4 +1,4 @@
-package com.example.flutter_pwa_wrapper
+package com.bettysteger.flutter_pwa_wrapper
 
 import io.flutter.embedding.android.FlutterActivity
 
