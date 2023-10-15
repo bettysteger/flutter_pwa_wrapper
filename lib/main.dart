@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,11 +7,11 @@ import 'firebase_options.dart';
 import 'package:flutter_pwa_wrapper/push_notifications_manager.dart';
 
 class SETTINGS {
-  static const title = 'Flutter PWA Wrapper';
-  static const url = 'https://bettysteger.com/flutter_pwa_wrapper/demo/'; // 'http://localhost:8887/'; // test dev
+  static const title = 'XMAS Race';
+  static const url = 'https://blitz-build.com/redox-interactive/sledge-runner/0-0-3/static/'; // 'http://localhost:8887/'; // test dev
   static const cookieDomain = null; // only necessary if you are using a subdomain and want it on the top-level domain
 
-  static const shouldAskForPushPermission = true;
+  static const shouldAskForPushPermission = false;
   // set userAgent to prevent 403 Google 'Error: Disallowed_Useragent'
   // @see https://stackoverflow.com/a/69342626/595152
   static const userAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36";
@@ -21,6 +22,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   runApp(const MyApp());
 }
 
