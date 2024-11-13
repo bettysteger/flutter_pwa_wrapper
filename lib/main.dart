@@ -52,11 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
     String? cookieDomain = SETTINGS.cookieDomain;
     cookieDomain ??= Uri.parse(SETTINGS.url).host;
 
-    /**
-     * How to use in JS:
-     * function setPushToken(token) { ... } // returns the device token
-     * Notification.requestPermission()
-     */
+    /// How to use in JS:
+    ///
+    /// function setPushToken(token) { ... } // returns the device token
+    /// Notification.requestPermission()
     void javaScriptFunction (JavaScriptMessage message) async {
       if(message.message == 'getPushToken') {
         var pnm = PushNotificationsManager.getInstance();
