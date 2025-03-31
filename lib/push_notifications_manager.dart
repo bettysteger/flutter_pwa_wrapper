@@ -89,8 +89,7 @@ class PushNotificationsManager {
           notification.body,
           const NotificationDetails(
             android: AndroidNotificationDetails('pwa_wrapper', 'PWA wrapper',
-              importance: Importance.high,
-              sound: RawResourceAndroidNotificationSound('notification')
+              importance: Importance.high
             ),
           ),
           payload: jsonEncode(message.data)
