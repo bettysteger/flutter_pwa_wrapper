@@ -69,8 +69,8 @@ class PushNotificationsManager {
     debugPrint('handlePushNotification: ${message.toString()}');
     String? url = message['payload'] != null ? jsonDecode(message['payload'])['url'] : message['url'];
 
-    if (message.data['url'] != null) {
-      return _webviewController.loadRequest(message.data['url']);
+    if (url != null) {
+      return _webviewController.loadRequest(Uri.parse(url));
     }
   }
 
@@ -94,7 +94,7 @@ class PushNotificationsManager {
     debugPrint('onSelectNotification: $payload');
     var data = jsonDecode(payload!);
     if(data['url'] != null) {
-      _webviewController.loadRequest(data['url']);
+      _webviewController.loadRequest(Uri.parse(data['url']));
     }
   }
 

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "40781351128",
+    "project_id": "flutter-pwa-wrapper",
+    "storage_bucket": "flutter-pwa-wrapper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40781351128:android:3a0dfa82a113385bff2fad",
+        "android_client_info": {
+          "package_name": "com.bettysteger.flutter_pwa_wrapper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40781351128-2qi9n44hnhoeg40vf1ojder8k7ko6rgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdO0Rr98TJxERrgMhFwZ6Cf5bkrkiL0CA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40781351128-2qi9n44hnhoeg40vf1ojder8k7ko6rgm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "40781351128-am93lvm69q2i7k1ps878sfh1to47aebg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bettysteger.flutterPwaWrapper"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

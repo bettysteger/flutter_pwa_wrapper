@@ -49,11 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
     cookieDomain ??= Uri.parse(SETTINGS.url).host;
     bool tempAllowRedirect = false;
 
-    /**
-     * How to use in JS:
-     * function setPushToken(token) { ... } // returns the device token
-     * Notification.requestPermission()
-     */
+    /// How to use in JS:
+    ///
+    /// function setPushToken(token) { ... } // returns the device token
+    /// Notification.requestPermission()
     void javaScriptFunction (JavaScriptMessage message) async {
       if(message.message == 'getPushToken') {
         var pnm = PushNotificationsManager.getInstance();
@@ -121,11 +120,5 @@ class _MyHomePageState extends State<MyHomePage> {
     PushNotificationsManager.getInstance().init(webviewController, SETTINGS.shouldAskForPushPermission);
 
     return WebViewWidget(controller: webviewController);
-  }
-
-  _launchURL(Uri uri) async {
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
   }
 }
