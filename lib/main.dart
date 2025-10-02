@@ -7,6 +7,7 @@ class SETTINGS {
   static const title = 'Innform';
   static const url = 'https://app.innform.io/'; // test dev
   static const allowedOrigins = ["innform.io", "intersport.de", "intersportakademie.at", "serverhero.de", "lowa.de", "sebazzo.com"];
+  static const newTabs = ["help.innform.io"];
   static const cookieDomain = null; // only necessary if you are using a subdomain and want it on the top-level domain
 
   static const shouldAskForPushPermission = true;
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             bool onOrigins = false;
             for(String allowedOrigin in SETTINGS.allowedOrigins) {
-              if(uri.host.endsWith(allowedOrigin)) {
+              if(uri.host.endsWith(allowedOrigin) && !SETTINGS.newTabs.contains(uri.host)) {
                 onOrigins = true;
                 break;
               }
