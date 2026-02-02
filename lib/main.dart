@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter_pwa_wrapper/push_notifications_manager.dart';
 
 class SETTINGS {
@@ -72,7 +73,17 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
 
-    webviewController = WebViewController()
+    late final PlatformWebViewControllerCreationParams params;
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+
+    webviewController = WebViewController.fromPlatformCreationParams(params)
       ..loadRequest(Uri.parse(SETTINGS.url))
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..addJavaScriptChannel('flutterChannel', onMessageReceived: javaScriptFunction)
