@@ -8,6 +8,7 @@ class SETTINGS {
   static const title = 'Innform';
   static const url = 'https://app.innform.io/'; // test dev
   static const allowedOrigins = ["innform.io", "feintool.com", "intersport.de", "intersportakademie.at", "serverhero.de", "sabu-wissenswelt.de", "swissbiomechanics-wissenswelt.ch", "anwr-wissenswelt.com", "bilthouse.com", "learningkw.com", "influencer.com", "kurtzersa.de", "emilabs.ai", "finmatics.com", "zusa-fachlehrgang.ch", "royaltap.live", "sportscheck.com", "rewe-dortmund.de", "kramer-schuhe-gruppe.de"];
+  static const oauthOrigins = ["sso.innform.io", "auth.innform.io", "login.microsoftonline.com", "accounts.google.com", "zoom.us", "api.typeform.com"];
   static const newTabs = ["help.innform.io"];
   static const cookieDomain = null; // only necessary if you are using a subdomain and want it on the top-level domain
 
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           bool allow = !request.isMainFrame;
           if(!allow) {
             // starts SSO login
-            if(uri.host == "sso.innform.io" || uri.host == "auth.innform.io" || uri.host.endsWith("auth0.com")) {
+            if(SETTINGS.oauthOrigins.contains(uri.host)) {
               tempAllowRedirect = true;
             }
 
@@ -116,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 break;
               }
             }
-            if(tempAllowRedirect && onOrigins && uri.host != "sso.innform.io" && uri.host != "auth.innform.io") {
+            if(tempAllowRedirect && onOrigins && !SETTINGS.oauthOrigins.contains(uri.host)) {
               tempAllowRedirect = false;
             }
             allow = onOrigins || tempAllowRedirect;
