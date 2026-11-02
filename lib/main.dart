@@ -7,7 +7,7 @@ import 'package:flutter_pwa_wrapper/push_notifications_manager.dart';
 class SETTINGS {
   static const title = 'Innform';
   static const url = 'https://app.innform.io/'; // test dev
-  static const allowedOrigins = ["innform.io", "feintool.com", "intersport.de", "intersportakademie.at", "serverhero.de", "sabu-wissenswelt.de", "swissbiomechanics-wissenswelt.ch", "anwr-wissenswelt.com", "bilthouse.com", "learningkw.com", "influencer.com", "kurtzersa.de", "emilabs.ai", "finmatics.com", "zusa-fachlehrgang.ch", "royaltap.live", "sportscheck.com", "rewe-dortmund.de", "kramer-schuhe-gruppe.de"];
+  static const allowedOrigins = ["innform.io", "feintool.com", "intersport.de", "intersportakademie.at", "serverhero.de", "sabu-wissenswelt.de", "swissbiomechanics-wissenswelt.ch", "anwr-wissenswelt.com", "bilthouse.com", "learningkw.com", "influencer.com", "kurtzersa.de", "emilabs.ai", "finmatics.com", "zusa-fachlehrgang.ch", "royaltap.live", "sportscheck.com", "rewe-dortmund.de", "kramer-schuhe-gruppe.de", "mpg-eyewear.com"];
   static const oauthOrigins = ["sso.innform.io", "auth.innform.io", "login.microsoftonline.com", "accounts.google.com", "zoom.us", "api.typeform.com"];
   static const newTabs = ["help.innform.io"];
   static const cookieDomain = null; // only necessary if you are using a subdomain and want it on the top-level domain
